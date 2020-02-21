@@ -69,5 +69,15 @@ class Pelicula {
     releaseDate      = json["release_date"];
   
   }
+
+  String getPosterImg() {
+    String url = '';
+    if (posterPath != null) {
+      url = 'http://image.tmdb.org/t/p/original/$posterPath';  
+    } else {
+      url = 'http://advancepetproduct.com/wp-content/uploads/2019/04/no-image.png';
+    }    
+    return url;
+  }
 }
 
