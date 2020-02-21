@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:peliculas/src/models/pelicula_model.dart';
 
 
 import 'package:peliculas/src/widgets/card_swiper_widget.dart';
 
 import 'package:peliculas/src/providers/peliculas_provider.dart';
+import 'package:peliculas/src/widgets/movie_horizontal.dart';
 
 class HomePage extends StatelessWidget {
   
@@ -11,7 +13,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {            
-    
+    peliProvider.getPopulares();
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
@@ -23,8 +25,10 @@ class HomePage extends StatelessWidget {
       ),
       body: Container(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            _swiperTarjetas()
+            _swiperTarjetas(),
+            _footer(context)
           ],
         )
       )
@@ -49,6 +53,35 @@ class HomePage extends StatelessWidget {
         
         
       },
+    );
+  }
+
+  Widget _footer(context) {
+    return Container(
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[   
+          Container(
+            child: Text('Populares' , style: Theme.of(context).textTheme.subhead),      
+            padding: EdgeInsets.only(left: 20.0)
+            ,
+          ),           
+          SizedBox(height: 5.0),
+
+          StreamBuilder(
+            stream: peliProvider.popularesStream,
+                        
+            builder: (BuildContext context, AsyncSnapshot<List<Pelicula>> snapshot) {
+              if (snapshot.hasData) {
+                return MovieHorizontal(peliculas: snapshot.data, siguientePagina: peliProvider.getPopulares,);
+              } else {
+                return Center(child: CircularProgressIndicator());
+              }              
+            },
+          ),
+        ],
+      ),
     );
   }
 }
