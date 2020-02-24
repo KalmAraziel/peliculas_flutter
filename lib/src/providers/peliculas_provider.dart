@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:peliculas/src/models/actores_model.dart';
 
 import 'package:peliculas/src/models/pelicula_model.dart';
+
 
 class PeliculasProvider {
   
@@ -61,11 +63,30 @@ class PeliculasProvider {
       'language': _lenguaje,
       'page': _popularesPage.toString()
     });
-
+    // print(url);
     final respuesta = await _procesarRespuesta(url);
     _populares.addAll(respuesta);
     popularesSink(_populares);
     _cargando  = false;
     return respuesta;
+  }
+
+  Future<List<Actor>> getCast(String idPelicula) async {
+    Cast cast;
+    final url = Uri.http(_url, '3/movie/$idPelicula/credits', {
+      'api_key': _apiKey,
+      'language': _lenguaje    
+    });
+
+    final response  = await http.get(url);
+    if (response.statusCode == 200) {      
+      // decodifico la data      
+      var decodedData = convert.jsonDecode(response.body);    
+      cast = new Cast.fromJsonList(decodedData['cast']);      
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+
+    return cast.actores;
   }
 }
