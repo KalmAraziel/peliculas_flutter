@@ -40,8 +40,7 @@ class PeliculasProvider {
     return peliculas.items;
   }
 
-  Future <List<Pelicula>> getEnCines() async {    
-    
+  Future <List<Pelicula>> getEnCines() async {     
     final url = Uri.http(_url, '3/movie/now_playing', {
       'api_key': _apiKey,
       'language': _lenguaje
@@ -49,6 +48,8 @@ class PeliculasProvider {
     return _procesarRespuesta(url);
 
   }
+
+
 
   Future <List<Pelicula>> getPopulares() async {    
     
@@ -88,5 +89,15 @@ class PeliculasProvider {
     }
 
     return cast.actores;
+  }
+
+  Future <List<Pelicula>> buscarPelicula(String query) async {     
+    final url = Uri.http(_url, '3/search/movie', {
+      'api_key': _apiKey,
+      'language': _lenguaje,
+      'query': query
+    });
+    return _procesarRespuesta(url);
+
   }
 }
